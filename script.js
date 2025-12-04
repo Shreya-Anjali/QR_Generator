@@ -8,10 +8,14 @@ function generateQR() {
         return;
     }
 
-    const encodedDetails = encodeURIComponent(details.trim());
+    // encode details to be passed in URL
+    const encodedDetails = encodeURIComponent(details);
 
-    const qr = new QRCode(qrContainer, {
-        text: `${window.location.origin}/viewer.html?data=${encodedDetails}`,
+    // generate QR with viewer page link
+    const qrText = `${window.location.origin}${window.location.pathname.replace("index.html", "")}viewer.html?data=${encodedDetails}`;
+
+    new QRCode(qrContainer, {
+        text: qrText,
         width: 256,
         height: 256,
         colorDark: "#000000",
@@ -24,20 +28,23 @@ function generateQR() {
         if (canvas) {
             const downloadBtn = document.getElementById('download-btn');
             const openBtn = document.getElementById('open-viewer');
+            
+            if (downloadBtn) {
+                downloadBtn.style.display = 'inline-block';
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = 'qr-code.png';
+                    link.click();
+                };
+            }
 
-            downloadBtn.style.display = 'inline-block';
-            openBtn.style.display = 'inline-block';
-
-            downloadBtn.onclick = () => {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL("image/png");
-                link.download = 'qr-code.png';
-                link.click();
-            };
-
-            openBtn.onclick = () => {
-                window.location.href = `/viewer.html?data=${encodedDetails}`;
-            };
+            if (openBtn) {
+                openBtn.style.display = 'inline-block';
+                openBtn.onclick = () => {
+                    window.location.href = qrText;
+                };
+            }
         }
-    }, 500);
+    }, 300);
 }
