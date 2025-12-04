@@ -8,14 +8,15 @@ function generateQR() {
         return;
     }
 
-    // encode details to be passed in URL
     const encodedDetails = encodeURIComponent(details);
 
-    // generate QR with viewer page link
-    const qrText = `${window.location.origin}${window.location.pathname.replace("index.html", "")}viewer.html?data=${encodedDetails}`;
+    // Auto GitHub repo support
+    const repo = window.location.pathname.split("/")[1];
+    const qrURL = `${window.location.origin}/${repo}/viewer.html?data=${encodedDetails}`;
 
-    new QRCode(qrContainer, {
-        text: qrText,
+    // Generate QR
+    const qr = new QRCode(qrContainer, {
+        text: qrURL,
         width: 256,
         height: 256,
         colorDark: "#000000",
@@ -23,28 +24,18 @@ function generateQR() {
         correctLevel: QRCode.CorrectLevel.H
     });
 
+    // Enable download after QR loads
     setTimeout(() => {
         const canvas = qrContainer.querySelector('canvas');
         if (canvas) {
             const downloadBtn = document.getElementById('download-btn');
-            const openBtn = document.getElementById('open-viewer');
-            
-            if (downloadBtn) {
-                downloadBtn.style.display = 'inline-block';
-                downloadBtn.onclick = () => {
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL("image/png");
-                    link.download = 'qr-code.png';
-                    link.click();
-                };
-            }
-
-            if (openBtn) {
-                openBtn.style.display = 'inline-block';
-                openBtn.onclick = () => {
-                    window.location.href = qrText;
-                };
-            }
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = 'qr-code.png';
+                link.click();
+            };
         }
     }, 300);
 }
