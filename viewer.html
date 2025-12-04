@@ -70,6 +70,19 @@ if (data.fileBase64) {
     }
 }
 </script>
+<script>
+window.onload = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = urlParams.get('data');
+
+    if (data) {
+        document.getElementById('details').innerText = decodeURIComponent(data);
+    } else {
+        document.getElementById('details').innerText = "No data found!";
+    }
+};
+</script>
 
 </body>
 </html>
+
