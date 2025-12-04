@@ -46,31 +46,6 @@ body {
 </div>
 
 <script>
-let raw = decodeURIComponent(location.search.substring(1));
-let data = {};
-try { data = JSON.parse(raw); } 
-catch { document.body.innerHTML = "<h2>Invalid QR Data</h2>"; }
-
-document.getElementById("details").textContent = data.details || "No details available";
-
-if (data.fileBase64) {
-    let btn = document.getElementById("download-btn");
-    btn.style.display = "block";
-    btn.onclick = () => {
-        let a = document.createElement("a");
-        a.href = data.fileBase64;
-        a.download = data.fileName;
-        a.click();
-    };
-
-    if (data.fileType.startsWith("image/")) {
-        let img = document.getElementById("preview");
-        img.src = data.fileBase64;
-        img.style.display = "block";
-    }
-}
-</script>
-<script>
 window.onload = function () {
     const urlParams = new URLSearchParams(window.location.search);
     const data = urlParams.get('data');
@@ -85,4 +60,5 @@ window.onload = function () {
 
 </body>
 </html>
+
 
