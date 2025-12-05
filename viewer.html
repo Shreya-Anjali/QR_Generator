@@ -37,24 +37,19 @@ body {
 </div>
 
 <script>
-window.onload = function () {
-    // Remove ? from URL and decode text
-    let raw = decodeURIComponent(window.location.search.slice(1));
+    const qrValue = window.location.search.substring(8);
+    const decoded = decodeURIComponent(qrValue);
 
-    if (!raw) {
-        document.getElementById("details").innerText = "No data found!";
-        return;
-    }
+    const output = document.getElementById("output");
 
-    // Try JSON. If fails, display raw string
-    try {
-        const json = JSON.parse(raw);
-        document.getElementById("details").innerText = JSON.stringify(json, null, 2);
-    } catch {
-        document.getElementById("details").innerText = raw;
+    if(decoded && decoded.trim() !== ""){
+        output.innerText = decoded;
+    } else {
+        output.innerText = "No data found in QR";
     }
-};
 </script>
+
 
 </body>
 </html>
+
