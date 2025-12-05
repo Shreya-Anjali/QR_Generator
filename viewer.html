@@ -19,20 +19,13 @@ body {
     border-radius: 12px;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
-#download-btn {
-    background: #0078c4;
-    color: white;
-    border: none;
+#details {
+    white-space: pre-wrap;
+    background: #eef7ff;
     padding: 12px;
     border-radius: 8px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-#preview {
-    margin-top: 15px;
-    max-width: 100%;
-    border-radius: 8px;
-    display: none;
+    font-size: 16px;
+    margin-top: 10px;
 }
 </style>
 </head>
@@ -40,37 +33,28 @@ body {
 
 <h1>Medical Profile</h1>
 <div class="card">
-    <p id="details" style="white-space: pre-line;"></p>
-    <img id="preview">
-    <button id="download-btn" style="display: none;">Download Attachment</button>
+    <p id="details"></p>
 </div>
 
 <script>
 window.onload = function () {
-    let query = window.location.search.substring(1); // remove "?"
-    let raw = decodeURIComponent(query);
+    // Remove ? from URL and decode text
+    let raw = decodeURIComponent(window.location.search.slice(1));
 
-    let parsedData;
-    try {
-        parsedData = JSON.parse(raw); // if JSON
-    } catch {
-        parsedData = raw; // if plain text
+    if (!raw) {
+        document.getElementById("details").innerText = "No data found!";
+        return;
     }
 
-    const details = document.getElementById("details");
-
-    if (typeof parsedData === "object") {
-        details.innerText = JSON.stringify(parsedData, null, 2); // pretty JSON
-    } else if (parsedData) {
-        details.innerText = parsedData; // normal text
-    } else {
-        details.innerText = "No data found!";
+    // Try JSON. If fails, display raw string
+    try {
+        const json = JSON.parse(raw);
+        document.getElementById("details").innerText = JSON.stringify(json, null, 2);
+    } catch {
+        document.getElementById("details").innerText = raw;
     }
 };
 </script>
 
 </body>
 </html>
-
-
-
