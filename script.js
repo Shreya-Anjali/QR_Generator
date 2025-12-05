@@ -1,40 +1,36 @@
-const qrText = document.getElementById("qr-text");
-const generateBtn = document.getElementById("generate-btn");
-const downloadBtn = document.getElementById("download-btn");
-const qrBox = document.getElementById("qr-box");
+function generateQR() {
+    const input = document.getElementById("person_details").value.trim();
+    const qrContainer = document.getElementById("qrcode");
+    const downloadBtn = document.getElementById("download-btn");
 
-let qr;
+    // Clear previous QR
+    qrContainer.innerHTML = "";
 
-generateBtn.addEventListener("click", () => {
-    const text = qrText.value.trim();
-
-    if (!text) {
-        alert("Please enter some text to generate QR!");
+    if (input === "") {
+        alert("Please enter some details first!");
         return;
     }
 
-    qrBox.innerHTML = ""; 
-
-    qr = new QRCode(qrBox, {
-        text: text,
-        width: 180,
-        height: 180,
+    let qr = new QRCode(qrContainer, {
+        text: input,
+        width: 200,
+        height: 200,
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    downloadBtn.style.display = "inline-block";
-});
-
-downloadBtn.addEventListener("click", () => {
-    if (!qr) return;
-
-    const img = qrBox.querySelector("img");
-    if (img) {
-        const link = document.createElement("a");
-        link.href = img.src;
-        link.download = "qr-code.png";
-        link.click();
-    } else {
-        alert("QR code image not found!");
-    }
-});
+    setTimeout(() => {
+        // Fetch QR image inside container
+        const qrImg = qrContainer.querySelector("img");
+        if (qrImg && qrImg.src) {
+            downloadBtn.style.display = "block";
+            downloadBtn.onclick = function () {
+                const link = document.createElement("a");
+                link.href = qrImg.src;
+                link.download = "qrcode.png";
+                link.click();
+            };
+        } else {
+            alert("Something went wrong. Try again!");
+        }
+    }, 300);
+}
