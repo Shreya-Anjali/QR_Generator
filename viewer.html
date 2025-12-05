@@ -47,18 +47,30 @@ body {
 
 <script>
 window.onload = function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const data = urlParams.get('data');
+    let query = window.location.search.substring(1); // remove "?"
+    let raw = decodeURIComponent(query);
 
-    if (data) {
-        document.getElementById('details').innerText = decodeURIComponent(data);
+    let parsedData;
+    try {
+        parsedData = JSON.parse(raw); // if JSON
+    } catch {
+        parsedData = raw; // if plain text
+    }
+
+    const details = document.getElementById("details");
+
+    if (typeof parsedData === "object") {
+        details.innerText = JSON.stringify(parsedData, null, 2); // pretty JSON
+    } else if (parsedData) {
+        details.innerText = parsedData; // normal text
     } else {
-        document.getElementById('details').innerText = "No data found!";
+        details.innerText = "No data found!";
     }
 };
 </script>
 
 </body>
 </html>
+
 
 
