@@ -1,38 +1,47 @@
+document.getElementById("download-btn").style.display = "none";
+
 function generateQR() {
     const details = document.getElementById("person_details").value.trim();
-    const qrContainer = document.getElementById("qrcode");
-    const downloadBtn = document.getElementById("download-btn");
-
-    // agar input empty hai to alert
-    if (details === "") {
-        alert("Please enter person details before generating QR!");
+    
+    if (!details) {
+        alert("Please enter details to generate QR.");
         return;
     }
 
-    // purana QR remove
-    qrContainer.innerHTML = "";
+    // Create JSON with only details — no file
+    const data = { details };
+    const jsonString = JSON.stringify(data);
 
-    // QR generate
-    const qr = new QRCode(qrContainer, {
-        text: details,
+    // Viewer page URL (no attachment needed)
+    const viewerURL = "https://shreya-anjali.github.io/Qr-generator/viewer.html?" + encodeURIComponent(jsonString);
+
+    const qrcodeEl = document.getElementById("qrcode");
+    qrcodeEl.innerHTML = "";
+
+    const qr = new QRCode(qrcodeEl, {
+        text: viewerURL,
         width: 256,
         height: 256,
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    // wait for DOM update, fir download option enable
-    setTimeout(() => {
-        const img = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
-        if (img) {
+    // Wait till QR image loads — then enable download
+    const observer = new MutationObserver(() => {
+        const img = qrcodeEl.querySelector("img");
+        if (img && img.src) {
+            const downloadBtn = document.getElementById("download-btn");
             downloadBtn.style.display = "block";
-
-            downloadBtn.onclick = function () {
-                let src = img.src || img.toDataURL("image/png");
-                const link = document.createElement("a");
-                link.href = src;
-                link.download = "QRCode.png";
-                link.click();
-            };
+            downloadBtn.onclick = () => downloadQR(img.src);
+            observer.disconnect();
         }
-    }, 500);
+    });
+
+    observer.observe(qrcodeEl, { childList: true, subtree: true });
+}
+
+function downloadQR(src) {
+    const link = document.createElement("a");
+    link.href = src;
+    link.download = "QR_Code.png";
+    link.click();
 }
