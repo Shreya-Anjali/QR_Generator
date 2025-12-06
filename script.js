@@ -1,23 +1,41 @@
 document.getElementById("download-btn").style.display = "none";
 
-function generateQR() {
-    let data = document.getElementById("person_details").value.trim();
+let qrcode;
 
-    if (data === "") {
-        alert("Please enter details.");
+function generateQR() {
+    const data = document.getElementById("person_details").value.trim();
+    const qrContainer = document.getElementById("qrcode");
+    const downloadBtn = document.getElementById("download-btn");
+
+    if (!data) {
+        alert("Please enter details before generating QR!");
         return;
     }
 
-    // Convert new lines to single line format so scanners don't mark as invalid
-    let formattedData = data.replace(/\n/g, "; ");
+    // remove old qr if exists
+    qrContainer.innerHTML = "";
 
-    document.getElementById("qrcode").innerHTML = "";
-
-    let qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: formattedData,
+    qrcode = new QRCode(qrContainer, {
+        text: data,
         width: 200,
         height: 200
     });
+
+    // wait for qr to actually render
+    setTimeout(() => {
+        const img = qrContainer.querySelector("img");
+        if (img) {
+            downloadBtn.style.display = "block";
+            downloadBtn.onclick = function () {
+                const link = document.createElement("a");
+                link.download = "qrcode.png";
+                link.href = img.src;
+                link.click();
+            };
+        }
+    }, 500);
+}
+
 
     // Download button
     setTimeout(() => {
