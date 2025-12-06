@@ -1,28 +1,39 @@
 document.getElementById("download-btn").style.display = "none";
 
 function generateQR() {
-    const details = document.getElementById("person_details").value.trim();
-    const qrContainer = document.getElementById("qrcode");
-    
-    // Clear previous QR
-    qrContainer.innerHTML = "";
+    let data = document.getElementById("person_details").value.trim();
 
-    if (!details) {
-        alert("Please enter the person's details first!");
+    if (data === "") {
+        alert("Please enter details.");
         return;
     }
 
-    // Build viewer.html URL with encoded data
-    const viewerURL =
-        "https://shreya-anjali.github.io/Qr-generator/viewer.html?" +
-        encodeURIComponent(details);
+    // Convert new lines to single line format so scanners don't mark as invalid
+    let formattedData = data.replace(/\n/g, "; ");
 
-    const qr = new QRCode(qrContainer, {
-        text: viewerURL,
-        width: 256,
-        height: 256,
-        correctLevel: QRCode.CorrectLevel.H
+    document.getElementById("qrcode").innerHTML = "";
+
+    let qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: formattedData,
+        width: 200,
+        height: 200
     });
+
+    // Download button
+    setTimeout(() => {
+        let img = document.querySelector("#qrcode img");
+        if (img) {
+            document.getElementById("download-btn").style.display = "block";
+            document.getElementById("download-btn").onclick = function () {
+                let link = document.createElement("a");
+                link.href = img.src;
+                link.download = "qrcode.png";
+                link.click();
+            };
+        }
+    }, 500);
+}
+
 
     // Enable download button when QR loads
     setTimeout(() => {
@@ -40,3 +51,4 @@ function generateQR() {
         }
     }, 500);
 }
+
