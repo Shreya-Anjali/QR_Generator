@@ -37,20 +37,20 @@ body {
 </div>
 
 <script>
-    const qrValue = window.location.search.substring(8);
-    const decoded = decodeURIComponent(qrValue);
-
+    const qrValue = new URLSearchParams(window.location.search).get("data");
     const details = document.getElementById("details");
 
-    if(decoded && decoded.trim() !== ""){
-        details.innerText = decoded;
+    if (qrValue && qrValue.trim() !== "") {
+        details.innerText = decodeURIComponent(qrValue);
     } else {
         details.innerText = "No data found in QR";
     }
 </script>
 
 
+
 </body>
 </html>
+
 
 
