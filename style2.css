@@ -90,8 +90,12 @@ button:hover {
 }
 
 #download-btn {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 2rem auto 0;
+  width: fit-content;
 }
+
 
 
