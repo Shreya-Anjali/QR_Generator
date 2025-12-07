@@ -12,27 +12,30 @@ function generateQR() {
         return;
     }
 
-    // remove old QR if exists
+    // Remove previous QR
     qrContainer.innerHTML = "";
 
-       const encoded = encodeURIComponent(data);
-    const qrUrl = `${window.location.origin}${window.location.pathname.replace("index.html","")}viewer.html?data=${encoded}`;
+    // Create encoded QR URL for viewer.html
+    const encoded = encodeURIComponent(data);
+    const folderPath = window.location.href.replace("index.html", "");
+    const qrURL = folderPath + "viewer.html?data=" + encoded;
+
+    console.log("QR URL:", qrURL); // Debugging
 
     qrcode = new QRCode(qrContainer, {
-        text: qrUrl,
+        text: qrURL,
         width: 200,
         height: 200
     });
 
-    // wait for QR to render
+    // Once QR is rendered, enable download button
     setTimeout(() => {
         const img = qrContainer.querySelector("img");
         const canvas = qrContainer.querySelector("canvas");
 
-        // show download button when QR generated
         if (img || canvas) {
             downloadBtn.style.display = "block";
-            downloadBtn.onclick = function () {
+            downloadBtn.onclick = () => {
                 const link = document.createElement("a");
 
                 if (img) {
@@ -47,4 +50,3 @@ function generateQR() {
         }
     }, 500);
 }
-
