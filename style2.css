@@ -89,4 +89,9 @@ button:hover {
     white-space: pre-line;
 }
 
+#download-btn {
+  display: block;
+  margin: 2rem auto 0;
+}
+
 
