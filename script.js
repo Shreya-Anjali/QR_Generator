@@ -15,8 +15,11 @@ function generateQR() {
     // remove old QR if exists
     qrContainer.innerHTML = "";
 
+       const encoded = encodeURIComponent(data);
+    const qrUrl = `${window.location.origin}${window.location.pathname.replace("index.html","")}viewer.html?data=${encoded}`;
+
     qrcode = new QRCode(qrContainer, {
-        text: data,
+        text: qrUrl,
         width: 200,
         height: 200
     });
@@ -44,3 +47,4 @@ function generateQR() {
         }
     }, 500);
 }
+
